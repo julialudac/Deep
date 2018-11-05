@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
+
 import torch
-import torch.nn as nn
 from torchvision import transforms
 from torch.utils.data.dataset import Dataset  # For custom datasets
 
@@ -15,24 +15,23 @@ class CustomDatasetFromImages(Dataset):
     - a tensor of labels, so a nbelements tensor.
     """
 
-    def convertalltotensor(self):
+    def convert_all_to_tensor(self):
         """Convert the list of images into a pure tensor,
         with its elements all transformzs(normalized)"""
-        # puretensor = torch.zeros(len(self.data),)
         l = []
         for im in self.data:
-            tensored = self.to_tensor(im)
+            tensored = self.transform(im)
             l.append(tensored)
-        l = torch.stack(l)
-        self.data = l
+        self.data = torch.stack(l)
 
-    def __init__(self, ims, transform):
+    def __init__(self, ims):
         self.data = ims
-        self.transform = transform
-        self.to_tensor = transforms.ToTensor()  # We define the operation to transform an Image to a tensor
+        self.transform = transforms.Compose(
+            [transforms.ToTensor(),
+             transforms.Normalize([0.5], [0.5])])
         # But ims is a list => minibatches will be list. We don't want that,
         # we want minibatches to be tensors themselves.
-        self.convertalltotensor()
+        self.convert_all_to_tensor()
 
     def __getitem__(self, index):
         """Important: defines one element (= the input as a tensor + the label (a simple nb))
