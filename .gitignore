@@ -2,5 +2,5 @@ start_deep/
 .ipynb_checkpoints/
 ben/
 .idea
-
+__pycache__/
 start_deep.tgz
