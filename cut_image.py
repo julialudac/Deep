@@ -1,4 +1,5 @@
 from PIL import Image
+from configuration import *
 
 
 class Chunking:
@@ -57,7 +58,7 @@ class Chunking:
         return chunks, winpositions
 
     @staticmethod
-    def get_imgchunks_atdiffscales(strides=(1, 1), nbshrinkages=3, divfactor=1.2):
+    def get_imgchunks_atdiffscales(strides=(1, 1), nbshrinkages=nb_shrinkage, divfactor=1.2):
         """
         :param strides: a pair of strides: stride on axis x and stride on axis y
         :param nbshrinkages: number of rescalings

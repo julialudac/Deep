@@ -15,7 +15,9 @@ class FramesAtGivenScaledImage():
         self.dataset = dataset
         self.positions = positions
         self.scores = []
+        print(scores)
         for score in scores:
+            print(score)
             self.scores.append(score[1]-score[0]) # Scores associated to the frames. These are scalars from -2 to 2. Filled with NN output, method set_scores
 
 

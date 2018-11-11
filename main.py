@@ -20,7 +20,6 @@ from ImageWithDetections import ImageWithDetections
 import Net
 
 
-
 def train_neural_network(train_loader, net, optimizer, criterion):
     print('Start training')
     for epoch in range(1):  # loop over the dataset multiple times

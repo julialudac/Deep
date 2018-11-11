@@ -1,4 +1,5 @@
 import FramesAtGivenScaledImage as fat
+from configuration import *
 
 
 class DetectionCandidate:
@@ -35,7 +36,7 @@ def capture_good_positions(framesAtGivenScaledImages):
     detectionCandidates = []
     for fagsi in framesAtGivenScaledImages:
         for i in range(len(fagsi.scores)):
-            if fagsi.scores[i] >= 0:
+            if fagsi.scores[i] >= threshold_score:
                 newdims = (int(36 * fagsi.scaling_factor), int(36 * fagsi.scaling_factor))
                 """To get the position in the rescaled image (recall that it is top-left), 
                 we first scale linearly the center, and then from the center, we deduced the new position
