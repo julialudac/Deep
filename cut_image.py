@@ -10,7 +10,7 @@ class Chunking:
     def init(image, windims = (36,36)):
         """
         :param image: a PIL image to slide with sliding window
-        :param windims: width and heigh (px) of sliding window
+        :param windims: width and height (px) of sliding window
         :return:
         """
         Chunking.im = image
