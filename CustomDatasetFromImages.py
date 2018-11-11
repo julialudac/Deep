@@ -29,6 +29,7 @@ class CustomDatasetFromImages(Dataset):
         self.transform = transforms.Compose(
             [transforms.ToTensor(),
              transforms.Normalize([0.5], [0.5])])
+
         # But ims is a list => minibatches will be list. We don't want that,
         # we want minibatches to be tensors themselves.
         self.convert_all_to_tensor()

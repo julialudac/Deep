@@ -35,8 +35,7 @@ def getDetections(subdetections, min_samples=1):
     for subd in subdetections:
         center = subd.get_center()
         centers_frames.append([center[0], center[1]])  # because DBSCAN works with vectors that are lists, not tuples
-    clusters = cluster_frames(centers_frames, 50, min_samples) # TODO: eps must be proportional to the image dims
-    return clusters
+    return cluster_frames(centers_frames, 50, min_samples) # TODO: eps must be proportional to the image dims
 
 
 def get_best_clusters_candidates(subdetections, clusters):
