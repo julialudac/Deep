@@ -26,7 +26,7 @@ class DetectionCandidate:
         return "score:" + str(self.score) + "; position:" + str(self.position) + "; dims:" + str(self.dims)
 
 
-def capture_good_positions(framesAtGivenScaledImages):  # TODO: seems that the scaling of the positions is false
+def capture_good_positions(framesAtGivenScaledImages):
     """
     :param framesAtGivenScaledImages: From this list, we build a list of DetectionCandidates. These are derived from
     the chunks whose associated score is =>0.
