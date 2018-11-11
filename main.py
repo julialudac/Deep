@@ -17,7 +17,7 @@ import Net
 
 def train_neural_network(train_loader, net, optimizer, criterion):
     print('Start training')
-    for epoch in range(2):  # loop over the dataset multiple times
+    for epoch in range(1):  # loop over the dataset multiple times
 
         running_loss = 0.0
         for i, data in enumerate(train_loader, 0):
@@ -81,8 +81,15 @@ if __name__ == "__main__":
     transform = transforms.Compose(
         [transforms.ToTensor(),
          transforms.Normalize([0.5], [0.5])])
-    train_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/train_images/',
-                                                      transform=transform)
+    train_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/train_images/',transform=transform)
+
+    for theta in range(3) :
+        transform = transforms.Compose(
+            [transforms.RandomRotation((90*(theta+1), 90*(theta+1))),
+            transforms.ToTensor(),
+             transforms.Normalize([0.5], [0.5])])
+        train_imagenet += torchvision.datasets.ImageFolder('start_deep/start_deep/train_images/',transform=transform)
+
     train_loader = torch.utils.data.DataLoader(train_imagenet, batch_size=4, shuffle=True, num_workers=2, pin_memory=True)
 
     #teting data set
@@ -92,7 +99,7 @@ if __name__ == "__main__":
 
     #define net and define optimizer
     net = Net.Net()
-    weights = torch.Tensor([1, 0.5])
+    weights = torch.Tensor([1, 3])
     criterion = nn.CrossEntropyLoss(weights)
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
