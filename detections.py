@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.cluster import DBSCAN
 
+import configuration
+
 
 def cluster_frames(centers_frames, eps=3, min_samples=1):
     """
@@ -35,8 +37,7 @@ def getDetections(subdetections, min_samples=1):
     for subd in subdetections:
         center = subd.get_center()
         centers_frames.append([center[0], center[1]])  # because DBSCAN works with vectors that are lists, not tuples
-    return cluster_frames(centers_frames, 50, min_samples) # TODO: eps must be proportional to the image dims
-
+    return cluster_frames(centers_frames, (configuration.image_dims[0]+configuration.image_dims[1])/40, min_samples)
 
 def get_best_clusters_candidates(subdetections, clusters):
     """

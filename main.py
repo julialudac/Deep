@@ -17,6 +17,7 @@ from detections import *
 from DetectionCandidate import *
 from FramesAtGivenScaledImage import FramesAtGivenScaledImage
 from ImageWithDetections import ImageWithDetections
+import configuration
 import Net
 
 
@@ -84,6 +85,9 @@ def test_neural_network_original_dataset(test_loader, net):
 
 def test_neural_network_own_dataset(path_to_image, net):
     im = Image.open(path_to_image)
+    # Get image dimensions and save them in configuration
+    configuration.image_dims = im.size
+
     # Convert into grayscale
     im = im.convert("L")
 
