@@ -14,6 +14,7 @@ from CustomDatasetFromImages import CustomDatasetFromImages
 import Net
 
 
+
 def train_neural_network(train_loader, net, optimizer, criterion):
     print('Start training')
     for epoch in range(2):  # loop over the dataset multiple times
@@ -52,7 +53,7 @@ def test_neural_network(test_loader, net):
             outputs = net(images)
             _, predicted = torch.max(outputs, 1)
             c = (predicted == labels).squeeze()
-            for i in range(4):
+            for i in range( len(labels) ):
                 label = labels[i]
                 class_correct[label] += c[i].item()
                 class_total[label] += 1
@@ -80,20 +81,20 @@ if __name__ == "__main__":
     transform = transforms.Compose(
         [transforms.ToTensor(),
          transforms.Normalize([0.5], [0.5])])
-    train_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/start_deep/train_images/',
+    train_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/train_images/',
                                                       transform=transform)
-    train_loader = torch.utils.data.DataLoader(train_imagenet, batch_size=4, shuffle=True, num_workers=2)
+    train_loader = torch.utils.data.DataLoader(train_imagenet, batch_size=4, shuffle=True, num_workers=2, pin_memory=True)
 
     #teting data set
-    test_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/start_deep/test_images/',
+    test_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/test_images/',
                                                      transform=transform)
-    test_loader = torch.utils.data.DataLoader(test_imagenet, batch_size=4, shuffle=True, num_workers=2)
+    test_loader = torch.utils.data.DataLoader(test_imagenet, batch_size=4, shuffle=True, num_workers=2, pin_memory=True)
 
     #define net and define optimizer
     net = Net.Net()
     weights = torch.Tensor([1, 0.5])
     criterion = nn.CrossEntropyLoss(weights)
-    optimizer = optim.SGD(net.parameters(), lr=0.05, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     #training
     net = train_neural_network(train_loader, net, optimizer, criterion)
