@@ -113,7 +113,7 @@ def test_neural_network_own_dataset(path_to_image, net):
 
     # cut image to different scales
     Chunking.init(image)
-    (scaled_images, scaled_positions) = Chunking.get_chunks_of_image_at_different_scales(strides=(5, 5), nb_shrinkages=3, division_factor=2)
+    (scaled_images, scaled_positions) = Chunking.get_chunks_of_image_at_different_scales(strides=strides, nb_shrinkages=3, division_factor=2)
 
     # compute score for each frame
     frames = []
@@ -139,7 +139,7 @@ def test_neural_network_own_dataset(path_to_image, net):
 
     # clustering of Subdetections into clusters_of_subdetections and filtering
     # min_samples --> number of min detection to confirm the detection
-    clusters_of_subdetections = get_detections(subdetections, min_samples=2)
+    clusters_of_subdetections = get_detections(subdetections, min_samples=min_samples)
     print("clusters of subdetections")
     print(clusters_of_subdetections)  # In the example, one subdetection is alone in a detection => this detection is discarded.
 
