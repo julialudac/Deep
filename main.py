@@ -210,7 +210,7 @@ if __name__ == "__main__":
             [transforms.RandomHorizontalFlip(p=1),
              transforms.ToTensor(),
              transforms.Normalize([0.5], [0.5])])
-        train_imagenet += torchvision.datasets.ImageFolder(path_to_training_dataset, transform=transform)
+#        train_imagenet += torchvision.datasets.ImageFolder(path_to_training_dataset, transform=transform)
 
     train_loader = torch.utils.data.DataLoader(train_imagenet, batch_size=4, shuffle=True, num_workers=2, pin_memory=True)
 

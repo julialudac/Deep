@@ -95,5 +95,5 @@ def get_detections(subdetections, min_samples=1):
         center = subdetect.get_center()
         centers_frames.append([center[0], center[1]])  # because DBSCAN works with vectors that are lists, not tuples
     print("inside get_detections")
-    return get_clusters_from_frames(centers_frames, (image_dims[0] + image_dims[1]) / 40, min_samples)
+    return get_clusters_from_frames(centers_frames, (image_dims[0] + image_dims[1]) / 100, min_samples)
 
