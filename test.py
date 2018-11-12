@@ -1,38 +1,38 @@
 from PIL import Image, ImageDraw, ImageFont
-from cut_image import Chunking
+from chunking import Chunking
 
 import torch
 import torchvision
 import torchvision.transforms as transforms
 
-import detections as det
-import DetectionCandidate as dc
-from CustomDatasetFromImages import CustomDatasetFromImages
-from FramesAtGivenScaledImage import FramesAtGivenScaledImage
-from ImageWithDetections import ImageWithDetections
+from detections import *
+import subdetection as dc
+from create_dataset import Create_dataset
+from frames_for_specific_scale import Frames_for_specific_scale
+from image_with_detections import Image_with_detections
 
 
 
-def try_cut_image():
-    im = Image.open("shrinked3_IMGP0017.jpg")
-    im = im.convert('L')  # convert into grayscale
-    Chunking.init(im)
-    (scaleschunks, scalespositions) = Chunking.get_imgchunks_atdiffscales(strides=(5, 5), nbshrinkages=3, divfactor=2)
-    print(scalespositions)
-    for i in range(len(scaleschunks)):
-        l = len(scaleschunks[i])
+def try_chunking():
+    image = Image.open("shrinked3_IMGP0017.jpg")
+    image = image.convert('L')  # convert into grayscale
+    Chunking.init(image)
+    (scaled_chunks, scaled_positions) = Chunking.get_chunks_of_image_at_different_scales(strides=(5, 5), nb_shrinkages=3, division_factor=2)
+    print(scaled_positions)
+    for i in range(len(scaled_chunks)):
+        l = len(scaled_chunks[i])
         print("number of positions:", l)
         # for j in range(l):
-        # scaleschunks[i][j].save("crops_visualization/cropped" + str(i) + "-" + str(j) + ".JPG", "JPEG") # just to see the result
+        # scaled_chunks[i][j].save("crops_visualization/cropped" + str(i) + "-" + str(j) + ".JPG", "JPEG") # just to see the result
 
 
-def try_CustomDatasetFromImages():
+def try_create_dataset():
     # We have a list of Images (here, we create 3 images)
-    im = Image.open("IMGP0017.JPG")
+    image = Image.open("IMGP0017.JPG")
     # Convert into grayscale
-    im = im.convert("L")
+    image = image.convert("L")
     # We have a list of Images
-    ims = [im.crop((0, 0, 1000, 800)), im.crop((1000, 800, 2000, 1600)), im.crop((2000, 1600, 3000, 2400))]
+    images = [image.crop((0, 0, 1000, 800)), image.crop((1000, 800, 2000, 1600)), image.crop((2000, 1600, 3000, 2400))]
 
     # We define a transformation to apply to dataset
     transform = transforms.Compose(
@@ -40,7 +40,7 @@ def try_CustomDatasetFromImages():
          transforms.Normalize((0.5), (0.5))])
 
     # We get the dataset from these Images
-    ds = CustomDatasetFromImages(ims, transform)
+    ds = Create_dataset(images, transform)
 
     # We get the dataloader. Minibatches of 2
     dataloader = torch.utils.data.DataLoader(ds, batch_size=2,
@@ -58,70 +58,57 @@ def try_CustomDatasetFromImages():
 
 
 # After the NN
-def try_fromscores2savingdetections():
+def try_from_scores_saving_detections():
 
-    """1/ Let we have these FramesAtGivenScaledImage instances,
+    """1/ Let we have these Frames_for_specific_scale instances,
     so we have the frames at different scales with positions and refined scores associated:
     """
     # For each image size, we won't add all the possible frames, it will be too long. But it's not important to test.
     # We don't need the dataset to test, this was for the NN step
 
     # Will be done before NN feeding
-    fagsi1 = FramesAtGivenScaledImage(1, [], [(0, 0), (95, 130), (100, 130), (500, 300)])
-    fagsi2 = FramesAtGivenScaledImage(1.2, [], [(0, 0), (81, 105), (333, 458), (500, 300)])
-    fagsi3 = FramesAtGivenScaledImage(2.4, [], [(0, 1), (38, 53), (167, 230), (312, 33), (400, 20)])
+    frames_for_scale_1 = Frames_for_specific_scale(1, [], [(0, 0), (95, 130), (100, 130), (500, 300)])
+    frames_for_scale_2 = Frames_for_specific_scale(1.2, [], [(0, 0), (81, 105), (333, 458), (500, 300)])
+    frames_for_scale_3 = Frames_for_specific_scale(2.4, [], [(0, 1), (38, 53), (167, 230), (312, 33), (400, 20)])
 
     # Will be while NN feeding. This is the 3rd step. TODO; implement set_scores
-    fagsi1.scores = [-1, 0.6, 0.65, -0.4]
-    fagsi2.scores = [-1, 0.7, 0.7, -0.4]
-    fagsi3.scores = [-1.2, 0.53, 0.8, 0.9, -0.1]
+    frames_for_scale_1.scores = [-1, 0.6, 0.65, -0.4]
+    frames_for_scale_2.scores = [-1, 0.7, 0.7, -0.4]
+    frames_for_scale_3.scores = [-1.2, 0.53, 0.8, 0.9, -0.1]
 
-    framesAtGivenScaledImages = []
-    framesAtGivenScaledImages.append(fagsi1)
-    framesAtGivenScaledImages.append(fagsi2)
-    framesAtGivenScaledImages.append(fagsi3)
+    frames = []
+    frames.append(frames_for_scale_1)
+    frames.append(frames_for_scale_2)
+    frames.append(frames_for_scale_3)
 
 
     """2/ Frome these, we get the subdetections."""
-    subdetections = dc.capture_good_positions(framesAtGivenScaledImages)
+    subdetections = capture_subdetections(frames)
     print("subdetections:")
-    for subd in subdetections:
-        print(subd)
-    # OK!
-
+    for subdetection in subdetections:
+        print(subdetection)
 
     """3/ Clustering of DetectionCandidates into Detections and filtering"""
-    detections = det.getDetections(subdetections, min_samples=2)  # OK!
+    detections = get_detections(subdetections, min_samples=2)  # OK!
     print(detections)  # In the example, one subdetection is alon in a detection => this detection is discarded.
 
 
     """4/ Get the best candidates"""
-    winners = det.get_best_clusters_candidates(subdetections, detections)
-    for w in winners:
-        print(w)
+    winners = get_best_clusters_candidates(subdetections, detections)
+    for winner in winners:
+        print(winner)
 
     """5/ Save an image with all subdetections, and then only with the kept subdetections"""
 
     # With all subdetections
-    pilImage = Image.open("catch_detec_images/blank_example.jpg")
-    imdet = ImageWithDetections(pilImage, subdetections)
-    imdet.save("catch_detec_images/all_detections.JPG")
+    image = Image.open("catch_detec_images/blank_example.jpg")
+    image_with_detections = Image_with_detections(image, subdetections)
+    image_with_detections.save("catch_detec_images/all_detections.JPG")
 
     # With only winner subdetections
-    imdet.subdetections = winners
-    imdet.save("catch_detec_images/winner_detections.JPG")
-
-
-
-def main():
-    try_fromscores2savingdetections()
-
-
-
-
-
-
+    image_with_detections.subdetections = winners
+    image_with_detections.save("catch_detec_images/winner_detections.JPG")
 
 
 if __name__ == "__main__":
-    main()
+    try_from_scores_saving_detections()
