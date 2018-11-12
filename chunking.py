@@ -80,7 +80,7 @@ class Chunking:
             scaled_chunks.append(chunks)
             scaled_positions.append(window_positions)
             current_image = current_image.resize((int(w / current_division_factor), int(h / current_division_factor)))
-            current_image.save("reduced" + str(i) + ".JPG", "JPEG")
+            #current_image.save("reduced" + str(i) + ".JPG", "JPEG")
             current_division_factor *= 2
             current_w, current_h = current_image.size
             # Of course we stop when the sliding window size is bigger than the image

@@ -15,13 +15,7 @@ class Create_dataset(Dataset):
     - a tensor of labels, so a nb_elements tensor.
     """
 
-    def __convert_all_to_tensors__(self):
-        """Convert the list of images into a pure tensor,
-        with its elements all transforms(normalized)"""
-        l = []
-        for im in self.data:
-            l.append(self.transform(im))
-        self.data = torch.stack(l)
+
 
     def __init__(self, ims):
         self.data = ims
@@ -42,3 +36,17 @@ class Create_dataset(Dataset):
     def __len__(self):
         return len(self.data)
 
+
+    def __convert_all_to_tensors__(self):
+        """Convert the list of images into a pure tensor,
+        with its elements all transforms(normalized)"""
+        l = []
+        for im in self.data:
+            our_tensor = self.transform(im)
+            size = our_tensor.size()
+            to_provide = torch.zeros((3, size[1],size[2]))
+            to_provide[0] = our_tensor[0]
+            to_provide[1] = our_tensor[0]
+            to_provide[2] = our_tensor[0]
+            l.append(to_provide)
+        self.data = torch.stack(l)
