@@ -68,7 +68,6 @@ def get_clusters_from_frames(centers_frames, eps=3, min_samples=1):
     :return: A list of lists --> for one list, there is the indexes of the frames
     We don't have an explicit class to design a cluster/detection, which is a list of (subdetection) indices.
     """
-    print("inside get_clusters_from_frames")
     clustering = DBSCAN(eps=eps, min_samples=min_samples).fit(centers_frames)
     dict_clusters = dict()
     for index, value in enumerate(clustering.labels_):

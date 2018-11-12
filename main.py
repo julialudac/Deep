@@ -172,15 +172,24 @@ if __name__ == "__main__":
     transform = transforms.Compose(
         [transforms.ToTensor(),
          transforms.Normalize([0.5], [0.5])])
-    train_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/train_images/',transform=transform)
+    path_to_training_dataset = path_to_original_dataset + 'train_images/'
+    train_imagenet = torchvision.datasets.ImageFolder(path_to_training_dataset,transform=transform)
 
     #data augmentation
-    for theta in range(3):
+    if data_augmentation:
+        #rotation
+        for theta in range(3):
+            transform = transforms.Compose(
+                [transforms.RandomRotation((90*(theta+1), 90*(theta+1))),
+                transforms.ToTensor(),
+                 transforms.Normalize([0.5], [0.5])])
+            train_imagenet += torchvision.datasets.ImageFolder(path_to_training_dataset,transform=transform)
+        #flip
         transform = transforms.Compose(
-            [transforms.RandomRotation((90*(theta+1), 90*(theta+1))),
-            transforms.ToTensor(),
+            [transforms.RandomHorizontalFlip(p=1),
+             transforms.ToTensor(),
              transforms.Normalize([0.5], [0.5])])
-        train_imagenet += torchvision.datasets.ImageFolder('start_deep/start_deep/train_images/',transform=transform)
+        train_imagenet += torchvision.datasets.ImageFolder(path_to_training_dataset, transform=transform)
 
     train_loader = torch.utils.data.DataLoader(train_imagenet, batch_size=4, shuffle=True, num_workers=2, pin_memory=True)
 
@@ -196,7 +205,8 @@ if __name__ == "__main__":
     while input("Do you want to test again? (yes/no)") == "yes":
         if input("Do you want to use the original testing dataset ? (yes/no)") == "yes" :
             #testing original data set (from teacher)
-            test_imagenet = torchvision.datasets.ImageFolder('start_deep/start_deep/start_deep/test_images/',
+            path_to_testing_dataset = path_to_original_dataset + 'test_images/'
+            test_imagenet = torchvision.datasets.ImageFolder(path_to_testing_dataset,
                                                              transform=transform)
             test_loader = torch.utils.data.DataLoader(test_imagenet, batch_size=4, shuffle=True, num_workers=2, pin_memory=True)
             test_neural_network_original_dataset(test_loader, net)
