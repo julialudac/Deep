@@ -2,9 +2,7 @@ import numpy as np
 
 
 class Frames_for_specific_scale():
-    """Represents the images chunks/frames for the scaled image at one size.
-    Instances are made before the NN feeding to store the datasets and the positions of the frames/image chunks, 
-    and also used after the NN feeding to store the scores"""
+    """Represents the images chunks/frames information for the scaled image at one size."""
 
     def __init__(self, scaling_factor, dataset, positions, scores):
         """

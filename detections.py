@@ -12,7 +12,7 @@ def capture_subdetections(frames_for_specific_scale):
     """
     :param frames_for_specific_scale: From this list, we build a list of Subdetections. These are derived from
     the chunks whose associated score is =>0.
-    :return: the list of DetectionCandidates
+    :return: the list of Subdetections
     """
     subdetections = []
     for frame in frames_for_specific_scale:
@@ -34,10 +34,10 @@ def capture_subdetections(frames_for_specific_scale):
 
 def get_best_clusters_candidates(subdetections, clusters):
     """
-    :param subdetections: a list of DetectionCandidates
-    :param clusters: a list of clusters
+    :param subdetections: a list of Subdetections
+    :param clusters: a list of clusters/detections
     :return: the chosen candidate for each cluster
-    => we have a list of DetectionCandidates. Each one represents the Detection that contains it.
+    => we have a list of Subdetections. Each one represents the detection that contains it.
     """
     chosen = []
     best_score = -1000
@@ -54,7 +54,7 @@ def get_best_clusters_candidates(subdetections, clusters):
 
 
 def get_center_of_frame(frame_position):
-    """Returns the center associated to frame_position in the scaled image
+    """Returns the center associated to frame_position in the reduced image
     (so the size of a frame is not yet resized:36x36)
     """
     return (frame_position[0] + 18, frame_position[1] + 18)
@@ -66,7 +66,7 @@ def get_clusters_from_frames(centers_frames, eps=3, min_samples=1):
     :param min_samples: number of samples in a neighborhood for a point to be a core point
     :param centers_frames: List of coordinates of the center of frames (x,y)
     :return: A list of lists --> for one list, there is the indexes of the frames
-    We don't have an explicit class to design a Cluster, which is a list of (subdetection) indices.
+    We don't have an explicit class to design a cluster/detection, which is a list of (subdetection) indices.
     """
     print("inside get_clusters_from_frames")
     clustering = DBSCAN(eps=eps, min_samples=min_samples).fit(centers_frames)

@@ -4,7 +4,8 @@ from configuration import *
 
 class Chunking:
     """A static class to slide an image at different scales
-    and return the captured sub-images and their positions
+    and return the captured image framgements and their positions.
+    Let we call an image fragment "frame" or "chunk".
     """
 
     @staticmethod
@@ -23,7 +24,7 @@ class Chunking:
         :param image: a PIL image to slide with sliding window
         :param strides: (stride_x, stride_y)
         :return: the Images but also the upper left positions of the
-        sliding windows. (But with stride 1, we have too many images!!! :O)
+        sliding windows.
         """
         chunks_image = []
         window_positions = []  # one position is a pair (x,y)

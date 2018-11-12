@@ -11,7 +11,7 @@ from create_dataset import Create_dataset
 from frames_for_specific_scale import Frames_for_specific_scale
 from image_with_detections import Image_with_detections
 
-
+"""This file is not vital for the project at all. It was used to test some features of the program."""
 
 def try_chunking():
     image = Image.open("shrinked3_IMGP0017.jpg")
@@ -71,7 +71,7 @@ def try_from_scores_saving_detections():
     frames_for_scale_2 = Frames_for_specific_scale(1.2, [], [(0, 0), (81, 105), (333, 458), (500, 300)])
     frames_for_scale_3 = Frames_for_specific_scale(2.4, [], [(0, 1), (38, 53), (167, 230), (312, 33), (400, 20)])
 
-    # Will be while NN feeding. This is the 3rd step. TODO; implement set_scores
+    # Will be while NN feeding. This is the 3rd step.
     frames_for_scale_1.scores = [-1, 0.6, 0.65, -0.4]
     frames_for_scale_2.scores = [-1, 0.7, 0.7, -0.4]
     frames_for_scale_3.scores = [-1.2, 0.53, 0.8, 0.9, -0.1]
