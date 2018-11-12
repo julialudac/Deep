@@ -15,6 +15,8 @@ from detections import *
 from frames_for_specific_scale import Frames_for_specific_scale
 from image_with_detections import Image_with_detections
 import network
+import detections  # To edit the global variable from it
+import frames_for_specific_scale
 
 
 def train_neural_network(train_loader, net, optimizer, criterion):
@@ -108,6 +110,7 @@ def test_neural_network_own_dataset(path_to_image, net):
     print('Start testing')
 
     image = Image.open(path_to_image)
+    detections.image_dims = image.size
     # Convert into grayscale
     # image = image.convert("L")
 
@@ -129,6 +132,7 @@ def test_neural_network_own_dataset(path_to_image, net):
                 images, _ = data
                 outputs = net(images)  # [(score of class_0, score of class_1), ...]
                 outputs = outputs.numpy()
+                outputs = frames_for_specific_scale.softmax(outputs)
                 outputs = outputs.tolist()
                 scores.extend(outputs)
         frames.append(Frames_for_specific_scale(scaled_factor, dataset, scaled_positions[index], scores))

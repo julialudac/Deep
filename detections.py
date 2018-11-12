@@ -5,10 +5,12 @@ from sklearn.cluster import DBSCAN
 from configuration import *
 from subdetection import Subdetection
 
+image_dims = [0, 0] # will be filled while loading the image
+
 
 def capture_subdetections(frames_for_specific_scale):
     """
-    :param frames_for_specific_scale: From this list, we build a list of DetectionCandidates. These are derived from
+    :param frames_for_specific_scale: From this list, we build a list of Subdetections. These are derived from
     the chunks whose associated score is =>0.
     :return: the list of DetectionCandidates
     """
@@ -94,5 +96,5 @@ def get_detections(subdetections, min_samples=1):
         center = subdetect.get_center()
         centers_frames.append([center[0], center[1]])  # because DBSCAN works with vectors that are lists, not tuples
     print("inside get_detections")
-    return get_clusters_from_frames(centers_frames, 50, min_samples) # TODO: eps must be proportional to the image dimensions
+    return get_clusters_from_frames(centers_frames, (image_dims[0] + image_dims[1]) / 40, min_samples)
 
