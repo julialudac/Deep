@@ -118,6 +118,27 @@ def test_neural_network_own_dataset(path_to_image, net):
     Chunking.init(image)
     (scaled_images, scaled_positions) = Chunking.get_chunks_of_image_at_different_scales(strides=strides, nb_shrinkages=3, division_factor=2)
 
+    subdetections=[]
+    for i in range(nb_image_feeding) :
+        # compute score for each frame
+        frames = []
+        scaled_factor = 1
+        for index in range(len(scaled_images)):
+            dataset = Create_dataset(scaled_images[index])
+            # get the dataloader. Minibatches of 4
+            dataloader = torch.utils.data.DataLoader(dataset, batch_size=4,
+                                                     shuffle=True, num_workers=2)
+            scores = []
+            with torch.no_grad():
+                for data in dataloader:
+                    images, _ = data
+                    outputs = net(images)  # [(score of class_0, score of class_1), ...]
+                    outputs = outputs.numpy()
+                    outputs = frames_for_specific_scale.softmax(outputs)
+                    outputs = outputs.tolist()
+                    scores.extend(outputs)
+            frames.append(Frames_for_specific_scale(scaled_factor, dataset, scaled_positions[index], scores))
+            scaled_factor = division_factor * (2 ** index)
     # compute score for each frame
     frames = []
     scaled_factor = 1
@@ -138,8 +159,8 @@ def test_neural_network_own_dataset(path_to_image, net):
         frames.append(Frames_for_specific_scale(scaled_factor, dataset, scaled_positions[index], scores))
         scaled_factor = division_factor * (2 ** index)
 
-    # subdetections
-    subdetections = capture_subdetections(frames)
+        # subdetections
+        subdetections += capture_subdetections(frames)
 
     # clustering of Subdetections into clusters_of_subdetections and filtering
     # min_samples --> number of min detection to confirm the detection
